@@ -1,0 +1,90 @@
+version: "3.8"
+services:
+  db_postgres:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - mydocker_mynetwork  
+
+  db_mysql:
+    image: mysql
+    container_name: local_mysql_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+      MYSQL_DATABASE: db_name
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_user_password
+    volumes:
+      - local_mysql_data:/var/lib/mysql
+    networks:
+      - mydocker_mynetwork  
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@rtaf.mi.th
+      PGADMIN_DEFAULT_PASSWORD: admin@@123
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - mydocker_mynetwork  
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db_mysql
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+    networks:
+      - mydocker_mynetwork  
+
+  redis:
+    image: redis
+    container_name: redis_container
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mydocker_mynetwork  
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight_container
+    restart: always
+    ports:
+      - "8001:5540"  
+    volumes:
+      - redisinsight_data:/data  
+    networks:
+      - mydocker_mynetwork  
+
+networks:
+  mydocker_mynetwork:  
+    external: true  
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
+  local_mysql_data:
+  redis_data:
+  redisinsight_data:
